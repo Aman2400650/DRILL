@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DRILL - Disaster Preparedness Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- DRILL Quiz Page - Fully Self-Contained -->
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --card: #111827;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.2);
+      --accent-strong: #fb923c;
+      --accent-alt: #22c55e;
+      --accent-alt-soft: rgba(34, 197, 94, 0.18);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(148, 163, 184, 0.35);
+      --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.85);
+      --shadow-card: 0 18px 32px rgba(15, 23, 42, 0.95);
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --transition-fast: 160ms ease-out;
+      --transition-med: 220ms ease-out;
+      --transition-slow: 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 40%, #000 85%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* ===== LAYOUT WRAPPER ===== */
+
+    .app-shell {
+      max-width: 1280px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: linear-gradient(145deg, rgba(15,23,42,0.95), rgba(15, 23, 42, 0.9));
+      border-radius: 28px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 20px 20px;
+      backdrop-filter: blur(16px);
+    }
+
+    @media (min-width: 900px) {
+      .app-shell {
+        padding: 20px 24px 22px;
+      }
+    }
+
+    /* ===== HEADER ===== */
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #fed7aa 0, #f97316 40%, #b45309 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 24px rgba(249, 115, 22, 0.75);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-circle::before {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: inherit;
+      border: 2px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .logo-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      border: 2px solid #111827;
+      border-top-width: 5px;
+      border-bottom-width: 3px;
+      transform: rotate(-12deg);
+      box-shadow: 0 0 12px rgba(15, 23, 42, 0.7);
+      background: linear-gradient(160deg, #fefce8, #fed7aa);
+    }
+
+    .logo-text-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .logo-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fefce8;
+    }
+
+    .logo-pill {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.16);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .logo-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.78rem;
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .user-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #38bdf8, #0ea5e9, #1e3a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #e0f2fe;
+      font-weight: 600;
+    }
+
+    .user-name {
+      color: #e5e7eb;
+      font-weight: 500;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.04);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #cbd5f5;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+
+    /* ===== MAIN GRID ===== */
+
+    .app-main {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) minmax(0, 0.9fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .app-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* ===== LEFT PANEL – INFO & TOPICS ===== */
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), rgba(15, 23, 42, 0.92));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.1), transparent 55%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .panel-tag {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #cbd5f5;
+    }
+
+    .tips-list {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .tips-list span {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .tips-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #cbd5f5;
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+    }
+
+    .topic-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .topic-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .topic-card {
+      position: relative;
+      padding: 10px 10px 11px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.94));
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med), background var(--transition-med);
+    }
+
+    .topic-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+      border-color: rgba(249, 115, 22, 0.7);
+    }
+
+    .topic-card.active {
+      border-color: var(--accent);
+      background: radial-gradient(circle at top, rgba(248, 250, 252, 0.06), rgba(15, 23, 42, 0.95));
+      box-shadow: 0 18px 40px rgba(249, 115, 22, 0.3);
+    }
+
+    .topic-chip {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+    }
+
+    .topic-name {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      color: #e5e7eb;
+    }
+
+    .topic-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .topic-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f97316;
+    }
+
+    .topic-temp {
+      font-size: 0.7rem;
+      color: #f97316;
+      opacity: 0.8;
+    }
+
+    .topic-meta {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topic-meta span:last-child {
+      font-style: italic;
+    }
+
+    /* ===== CENTER – QUIZ CARD ===== */
+
+    .quiz-card {
+      background: radial-gradient(circle at top, rgba(248, 250, 252, 0.03), rgba(15, 23, 42, 0.96));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 16px 16px 14px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(circle at 0 0, rgba(249, 115, 22, 0.08), transparent 58%);
+      opacity: 0.8;
+    }
+
+    .quiz-card-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .quiz-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .quiz-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fefce8;
+    }
+
+    .quiz-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .quiz-mode-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+    }
+
+    .quiz-mode-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+    }
+
+    /* Progress bar */
+    .progress-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #f97316);
+      width: 0%;
+      transition: width var(--transition-slow);
+    }
+
+    .quiz-body {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .question-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .question-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.98);
+      font-size: 0.72rem;
+      color: #e5e7eb;
+    }
+
+    .question-badge span.question-index {
+      font-weight: 600;
+      color: #f97316;
+    }
+
+    .timer-chip {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.12);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .timer-chip.warning .timer-dot {
+      background: #f97316;
+    }
+
+    .timer-chip.danger .timer-dot {
+      background: #ef4444;
+    }
+
+    .question-text {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+
+    .option-list {
+      margin-top: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .option-btn {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.98);
+      padding: 8px 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #e5e7eb;
+      transition: background var(--transition-med), transform var(--transition-med), border-color var(--transition-med), box-shadow var(--transition-med);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 65%);
+      transition: opacity var(--transition-fast);
+    }
+
+    .option-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(249, 115, 22, 0.8);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .option-btn:hover::before {
+      opacity: 1;
+    }
+
+    .option-label {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+      color: #cbd5f5;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .option-btn.selected {
+      border-color: #38bdf8;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.25), rgba(15, 23, 42, 1));
+      box-shadow: 0 16px 30px rgba(56, 189, 248, 0.32);
+    }
+
+    .option-btn.correct {
+      border-color: #22c55e;
+      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.2), rgba(15, 23, 42, 1));
+    }
+
+    .option-btn.wrong {
+      border-color: #ef4444;
+      background: radial-gradient(circle at top, rgba(239, 68, 68, 0.16), rgba(15, 23, 42, 1));
+    }
+
+    .option-badge {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #cbd5f5;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .correct-badge {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: #bbf7d0;
+    }
+
+    .wrong-badge {
+      border-color: rgba(239, 68, 68, 0.7);
+      color: #fecaca;
+    }
+
+    .quiz-footer {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .quiz-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .pill-small {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill-small span {
+      font-size: 0.65rem;
+      color: #e5e7eb;
+    }
+
+    .quiz-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      padding: 7px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      font-weight: 600;
+      box-shadow: 0 14px 30px rgba(249, 115, 22, 0.5);
+      border-radius: 999px;
+      border: 1px solid rgba(250, 250, 249, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 35px rgba(249, 115, 22, 0.65);
+      background: linear-gradient(135deg, #fb923c, #f97316);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.96);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* ===== RIGHT PANEL – STATS & REVIEW ===== */
+
+    .stats-panel {
+      background: radial-gradient(circle at top right, rgba(30, 64, 175, 0.18), rgba(15, 23, 42, 0.96));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 12px 12px 14px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-panel::before {
+      content: "";
+      position: absolute;
+      inset: -35%;
+      background: radial-gradient(circle at 100% 0, rgba(59, 130, 246, 0.18), transparent 60%);
+      pointer-events: none;
+    }
+
+    .stats-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .stats-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .stats-mode {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .score-card {
+      margin-top: 2px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      padding: 9px 9px 8px;
+      display: grid;
+      grid-template-columns: 1.3fr 1.6fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 980px) {
+      .score-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .score-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .score-badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #9ca3af;
+    }
+
+    .score-value {
+      font-size: 1.24rem;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      color: #fefce8;
+    }
+
+    .score-value span.sub {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #9ca3af;
+    }
+
+    .score-remark {
+      font-size: 0.75rem;
+      color: #a5b4fc;
+    }
+
+    .score-side {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .circle-meter {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: 6px solid rgba(30, 64, 175, 0.7);
+      border-top-color: #22c55e;
+      border-right-color: #f97316;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #e5e7eb;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 1), 0 0 24px rgba(37, 99, 235, 0.7);
+    }
+
+    .score-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .mini-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .mini-bar {
+      height: 4px;
+      flex: 1;
+      border-radius: 999px;
+      background: rgba(30, 64, 175, 0.6);
+      overflow: hidden;
+    }
+
+    .mini-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #f97316);
+      width: 0%;
+      transition: width var(--transition-slow);
+    }
+
+    .stats-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.7rem;
+      color: #cbd5f5;
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .chip.good {
+      border-color: rgba(34, 197, 94, 0.85);
+      color: #bbf7d0;
+      background: rgba(21, 128, 61, 0.3);
+    }
+
+    .chip.ok {
+      border-color: rgba(249, 115, 22, 0.9);
+      color: #fed7aa;
+      background: rgba(124, 45, 18, 0.4);
+    }
+
+    .chip.bad {
+      border-color: rgba(239, 68, 68, 0.85);
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.4);
+    }
+
+    .review-title {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .review-list {
+      margin-top: 4px;
+      max-height: 180px;
+      overflow: auto;
+      display: grid;
+      gap: 6px;
+      padding-right: 4px;
+    }
+
+    .review-item {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.98);
+      padding: 6px 7px;
+      font-size: 0.7rem;
+      display: grid;
+      gap: 3px;
+    }
+
+    .review-q {
+      color: #e5e7eb;
+    }
+
+    .review-ans {
+      color: #9ca3af;
+    }
+
+    .review-ans span.label {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .review-ans span.correct {
+      color: #4ade80;
+    }
+
+    .review-ans span.wrong {
+      color: #fb7185;
+    }
+
+    .empty-text {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      color: #6b7280;
+    }
+
+    /* ===== UTILITIES ===== */
+
+    .hidden {
+      display: none !important;
+    }
+
+    .fade-in {
+      animation: fadeIn 260ms ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo-wrap">
+        <div class="logo-circle">
+          <div class="logo-icon"></div>
+        </div>
+        <div>
+          <div class="logo-text-main">
+            <span class="logo-title">DRILL</span>
+            <span class="logo-pill">Disaster Prep Quiz</span>
+          </div>
+          <div class="logo-sub">Disaster Preparedness & Response Learning System</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="badge-pill">School / College Safety Module</div>
+        <div class="user-chip">
+          <div class="user-avatar" id="userAvatar">S</div>
+          <div class="user-name" id="userName">Student</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="app-main">
+
+      <!-- LEFT: INFO & TOPICS -->
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Prepare • Practice • Protect</div>
+          <div class="panel-tag">Instructions</div>
+        </div>
+
+        <div class="tips-list">
+          <span>
+            <span class="tips-bullet"></span>
+            <span>Step 1: <b>Select a hazard topic</b> from the cards below (Fire, Earthquake, Flood, Cyclone).</span>
+          </span>
+          <span>
+            <span class="tips-bullet"></span>
+            <span>Step 2: Click <b>&ldquo;Start Quiz&rdquo;</b> to begin. Each quiz contains 10 MCQ questions.</span>
+          </span>
+          <span>
+            <span class="tips-bullet"></span>
+            <span>Step 3: Choose your best answer. Once selected, correct / incorrect feedback will be shown.</span>
+          </span>
+          <span>
+            <span class="tips-bullet"></span>
+            <span>Step 4: Watch your <b>score</b> and <b>preparedness level</b> update on the right panel.</span>
+          </span>
+        </div>
+
+        <div class="pill-group">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span>Based on NDMA safety guidelines</span>
+          </div>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span>Ideal for school & college drills</span>
+          </div>
+        </div>
+
+        <div class="panel-header" style="margin-top: 10px;">
+          <div class="panel-title" style="font-size: 0.85rem;">Select Disaster Topic</div>
+          <div class="panel-tag">Step 1</div>
+        </div>
+
+        <div class="topic-grid" id="topicGrid">
+          <div class="topic-card" data-topic="fire">
+            <div class="topic-chip">Fire Safety</div>
+            <div class="topic-name">
+              <span class="topic-label"><span class="topic-dot"></span>Fire Hazard</span>
+              <span class="topic-temp">🔥</span>
+            </div>
+            <div class="topic-meta">
+              <span>Extinguishers, exits, alarms</span>
+              <span>10 Questions</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="earthquake">
+            <div class="topic-chip">Earthquake Safety</div>
+            <div class="topic-name">
+              <span class="topic-label"><span class="topic-dot" style="background:#38bdf8;"></span>Earthquake</span>
+              <span class="topic-temp">🌍</span>
+            </div>
+            <div class="topic-meta">
+              <span>Drop–Cover–Hold drills</span>
+              <span>10 Questions</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="flood">
+            <div class="topic-chip">Flood Preparedness</div>
+            <div class="topic-name">
+              <span class="topic-label"><span class="topic-dot" style="background:#22c55e;"></span>Flood</span>
+              <span class="topic-temp">🌧️</span>
+            </div>
+            <div class="topic-meta">
+              <span>Evacuation, contamination</span>
+              <span>10 Questions</span>
+            </div>
+          </div>
+          <div class="topic-card" data-topic="cyclone">
+            <div class="topic-chip">Cyclone & Storm</div>
+            <div class="topic-name">
+              <span class="topic-label"><span class="topic-dot" style="background:#a855f7;"></span>Cyclone</span>
+              <span class="topic-temp">🌀</span>
+            </div>
+            <div class="topic-meta">
+              <span>Wind, surge, shelter</span>
+              <span>10 Questions</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER: QUIZ CARD -->
+      <section class="quiz-card">
+        <div class="quiz-card-inner">
+          <div class="quiz-top-row">
+            <div class="quiz-title-wrap">
+              <div class="quiz-title">Safety Preparedness Quiz</div>
+              <div class="quiz-subtitle" id="quizTopicLabel">Select a topic to begin your drill.</div>
+            </div>
+            <div class="quiz-mode-pill">
+              <span class="quiz-mode-dot"></span>
+              <span id="questionCountLabel">0 / 10 Questions</span>
+            </div>
+          </div>
+
+          <div class="progress-row">
+            <div class="progress-top">
+              <span>Progress</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="quiz-body">
+
+            <!-- Question Row -->
+            <div class="question-badge-row">
+              <div class="question-badge">
+                Q<span class="question-index" id="questionIndex">–</span>
+                <span id="questionCounterLabel">/ 10</span>
+              </div>
+              <div class="timer-chip" id="timerChip">
+                <span class="timer-dot"></span>
+                <span id="timerLabel">Timer: 00:00</span>
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <div class="question-text" id="questionText">
+              Please choose a disaster topic from the left to start the quiz.
+            </div>
+
+            <!-- Options -->
+            <div class="option-list" id="optionList">
+              <!-- Options injected via JS -->
+            </div>
+
+          </div>
+
+          <div class="quiz-footer">
+            <div class="quiz-nav-left">
+              <div class="pill-small">
+                <span>Attempted:</span>
+                <span id="attemptLabel">0</span>
+              </div>
+              <div class="pill-small">
+                <span>Correct:</span>
+                <span id="correctLabel">0</span>
+              </div>
+              <div class="pill-small">
+                <span>Topic:</span>
+                <span id="topicNameSmall">None</span>
+              </div>
+            </div>
+            <div class="quiz-buttons">
+              <button class="btn btn-ghost" id="btnReset">Reset</button>
+              <button class="btn btn-primary" id="btnNext">Start Quiz</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: STATS & REVIEW -->
+      <aside class="stats-panel">
+        <div class="stats-inner">
+          <div class="stats-header">
+            <div>
+              <div class="stats-title">Preparedness Score</div>
+              <div class="stats-mode">Live performance based on your answers</div>
+            </div>
+          </div>
+
+          <div class="score-card">
+            <div class="score-main">
+              <div class="score-badge">Overall Score</div>
+              <div class="score-value">
+                <span id="scoreLabel">0</span>
+                <span class="sub">/ 10</span>
+              </div>
+              <div class="score-remark" id="remarkLabel">Answer questions to see your preparedness level.</div>
+            </div>
+            <div class="score-side">
+              <div class="circle-meter" id="circleMeter">0%</div>
+              <div class="score-tags">
+                <div class="mini-tag">
+                  <span>Strength</span>
+                  <div class="mini-bar"><div class="mini-fill" id="strengthBar"></div></div>
+                </div>
+                <div class="mini-tag">
+                  <span>Accuracy</span>
+                  <div class="mini-bar"><div class="mini-fill" id="accuracyBar"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-chips">
+            <div class="chip" id="chipTopic">No topic selected</div>
+            <div class="chip" id="chipStatus">Status: Idle</div>
+            <div class="chip" id="chipTime">Time: 00:00</div>
+          </div>
+
+          <div class="review-title">
+            <span>Question Review</span>
+            <span style="font-size:0.7rem;color:var(--muted);" id="reviewCountLabel">(0 reviewed)</span>
+          </div>
+          <div class="review-list" id="reviewList">
+            <div class="empty-text">
+              Once you finish the quiz, you will see a summary of each question, your selected answer, and the correct answer here.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+
+  <script>
+    // ============================================
+    // QUIZ LOGIC – DRILL DISASTER PREPAREDNESS
+    // ============================================
+
+    const questions = {
+      fire: [
+        {
+          id: "F01",
+          text: "If a small electrical fire starts in a classroom, what is the safest first action?",
+          options: [
+            "Pour water on the fire immediately to cool it.",
+            "Unplug the device if it is safe to do so and use a CO₂ extinguisher.",
+            "Cover it with cloth and leave the room.",
+            "Ignore it and wait for someone else to respond."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "F02",
+          text: "What does the PASS method stand for when using a fire extinguisher?",
+          options: [
+            "Pull, Aim, Squeeze, Sweep",
+            "Push, Alert, Spray, Stop",
+            "Point, Aim, Spray, Sweep",
+            "Pull, Alert, Stop, Spray"
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "F03",
+          text: "Which type of extinguisher is generally safe to use on electrical fires?",
+          options: [
+            "Water extinguisher",
+            "Carbon dioxide (CO₂) extinguisher",
+            "Wet chemical extinguisher",
+            "Foam extinguisher"
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "F04",
+          text: "What is the first priority if you discover a larger uncontrolled fire in a building?",
+          options: [
+            "Try to extinguish it on your own.",
+            "Raise the alarm, alert others, and begin evacuation.",
+            "Take a video and send it to others.",
+            "Close all exits and windows."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "F05",
+          text: "Why should exit routes and fire exits always be kept clear?",
+          options: [
+            "To make the building look clean.",
+            "So that emergency teams can run faster.",
+            "To ensure safe and quick evacuation in case of a fire.",
+            "For decoration purposes only."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "F06",
+          text: "During a fire evacuation, which of the following is correct behaviour?",
+          options: [
+            "Run quickly and push others to exit first.",
+            "Use elevators to exit faster.",
+            "Walk calmly, follow instructions, and use stairs.",
+            "Go back to collect your belongings."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "F07",
+          text: "Why is it important to conduct regular fire drills in schools and colleges?",
+          options: [
+            "To disturb classes and have fun.",
+            "To practice safe evacuation routes and reduce panic in real emergencies.",
+            "To check fire alarm loudness only.",
+            "To show visitors that the school is busy."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "F08",
+          text: "Which of the following increases fire risk inside a classroom?",
+          options: [
+            "Properly working fire extinguishers.",
+            "Overloaded electrical extensions and tangled wires.",
+            "Clearly visible exit signs.",
+            "Fire alarm system in working condition."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "F09",
+          text: "What emergency number is commonly used to call the fire service in India?",
+          options: [
+            "101",
+            "108",
+            "111",
+            "112 only"
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "F10",
+          text: "After a fire is controlled, when is it safe to re-enter the building?",
+          options: [
+            "As soon as the flames are not visible.",
+            "Immediately, to check your belongings.",
+            "Only after authorised officials declare the area safe.",
+            "After 5 minutes automatically."
+          ],
+          answerIndex: 2
+        }
+      ],
+      earthquake: [
+        {
+          id: "E01",
+          text: "What is the recommended safety action during strong shaking indoors?",
+          options: [
+            "Run outside quickly using the lift.",
+            "Drop, Cover and Hold On under sturdy furniture.",
+            "Stand near a window and watch the situation.",
+            "Stand in the middle of the classroom without protection."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "E02",
+          text: "Where should you NOT stand during an earthquake inside a building?",
+          options: [
+            "Under a strong table.",
+            "Away from shelves and glass.",
+            "Near windows and glass doors.",
+            "In an open doorway only if it is strong."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "E03",
+          text: "After shaking stops, what should you do first?",
+          options: [
+            "Check for injuries and provide first aid if required.",
+            "Use elevators to move between floors.",
+            "Light a match or candle immediately.",
+            "Jump from windows to reach open areas faster."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "E04",
+          text: "If you are outdoors during an earthquake, what is the safest place?",
+          options: [
+            "Near tall buildings and electric poles.",
+            "In an open ground away from trees, poles, and buildings.",
+            "Under a flyover.",
+            "Inside a parked bus."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "E05",
+          text: "Why should you avoid using elevators during or just after an earthquake?",
+          options: [
+            "They are too slow.",
+            "They may get stuck or fail due to power outage or damage.",
+            "They make noise.",
+            "They are overcrowded."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "E06",
+          text: "What is a useful item to have in an earthquake emergency kit?",
+          options: [
+            "Loud music system.",
+            "Emergency whistle, torch, first aid kit, and water.",
+            "Only extra clothes.",
+            "Only decorative items."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "E07",
+          text: "What could be a sign of gas leakage after an earthquake?",
+          options: [
+            "Strong smell of gas near the pipeline or cylinder.",
+            "No noise in the room.",
+            "Water on the floor.",
+            "Closed windows."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "E08",
+          text: "What should family members discuss as part of earthquake preparedness?",
+          options: [
+            "Where to keep gadgets during exams.",
+            "A common meeting point, emergency contacts, and safe spots.",
+            "Favourite holiday destination.",
+            "Daily menu for lunch."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "E09",
+          text: "During strong shaking in class, where is the safest place to take cover?",
+          options: [
+            "Under a strong desk or table, away from windows.",
+            "Near the notice board.",
+            "At the classroom door blocking exit.",
+            "Beside tall cupboards."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "E10",
+          text: "After an earthquake, when is it safe to return to the building?",
+          options: [
+            "As soon as the shaking stops.",
+            "After teachers and authorities inspect and declare it safe.",
+            "After 2 minutes by default.",
+            "When students decide among themselves."
+          ],
+          answerIndex: 1
+        }
+      ],
+      flood: [
+        {
+          id: "FL01",
+          text: "Why is walking through moving flood water dangerous?",
+          options: [
+            "It is always cold.",
+            "It can hide open drains, debris, or strong currents that can sweep you away.",
+            "It will make your clothes wet only.",
+            "Because it looks dirty in photos."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL02",
+          text: "What should you do if flood water starts entering your home?",
+          options: [
+            "Move to higher floors or a safe elevated place immediately.",
+            "Stay in the basement to protect belongings.",
+            "Connect electrical devices quickly.",
+            "Open the fridge for light."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "FL03",
+          text: "Which of the following should be included in a flood emergency kit?",
+          options: [
+            "Light decorative items.",
+            "Non-perishable food, clean water, medicines, and important documents.",
+            "Only mobile phone and earphones.",
+            "Only extra footwear."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL04",
+          text: "If the area is flooded, driving through deeper water on roads:",
+          options: [
+            "Is safe if you drive slowly.",
+            "Is dangerous because vehicles can stall or be swept away.",
+            "Helps wash the vehicle.",
+            "Is recommended to test car strength."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL05",
+          text: "After a flood, which water is safest for drinking?",
+          options: [
+            "Any tap water.",
+            "Water in open containers.",
+            "Only boiled, treated, or bottled water as per official advice.",
+            "Flood water that looks clear."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "FL06",
+          text: "Who should you trust for correct flood warnings?",
+          options: [
+            "Random social media forwards.",
+            "Local disaster management authority, IMD, and official government sources.",
+            "Only friends and neighbours.",
+            "Unverified videos."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL07",
+          text: "Why is it important to switch off electricity when water enters the house?",
+          options: [
+            "To save the bill.",
+            "To avoid electric shocks, short circuits, or fire risk.",
+            "To keep fans off only.",
+            "Because lights are not needed in flood."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL08",
+          text: "Which of the following helps reduce flood risk in your surroundings?",
+          options: [
+            "Throwing waste in drains.",
+            "Keeping drains clean and not blocking water outlets.",
+            "Building on natural drainage channels.",
+            "Removing all trees near rivers."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "FL09",
+          text: "If you must evacuate quickly because of flood, what is essential to carry?",
+          options: [
+            "Important documents, basic clothes, medicines, and emergency kit.",
+            "Only heavy furniture.",
+            "Entire cupboard.",
+            "Nothing at all."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "FL10",
+          text: "Why should children be kept away from floodwater?",
+          options: [
+            "They may splash too much.",
+            "Floodwater may contain germs, chemicals, or hidden hazards.",
+            "They get bored.",
+            "They cannot swim properly."
+          ],
+          answerIndex: 1
+        }
+      ],
+      cyclone: [
+        {
+          id: "C01",
+          text: "Before a cyclone, which preparation is MOST important?",
+          options: [
+            "Decorating the rooftop.",
+            "Storing emergency food, water, medicines, and securing important documents.",
+            "Planning a picnic near the sea.",
+            "Leaving windows open."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C02",
+          text: "Which is the safest place to stay during strong cyclone winds?",
+          options: [
+            "Near windows to observe outside.",
+            "Under large trees.",
+            "Inside an interior room away from glass and windows.",
+            "On the terrace to check the sky."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "C03",
+          text: "Why must loose outdoor items (like boards, pots, etc.) be secured before a cyclone?",
+          options: [
+            "To avoid neighbours taking them.",
+            "They can fly with strong winds and cause injuries or damage.",
+            "They get dusty.",
+            "They become old quickly."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C04",
+          text: "If authorities announce cyclone evacuation, what should you do?",
+          options: [
+            "Ignore and stay at home watching TV.",
+            "Evacuate quickly to the designated shelter as instructed.",
+            "Go closer to the coastline.",
+            "Wait till the wind becomes stronger."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C05",
+          text: "Which communication tools are most useful during a cyclone emergency?",
+          options: [
+            "Charged mobile, power bank, and battery-operated radio.",
+            "Only social media accounts.",
+            "Landline phone kept in the garden.",
+            "Paper notices only."
+          ],
+          answerIndex: 0
+        },
+        {
+          id: "C06",
+          text: "After a cyclone passes, what is the safest approach?",
+          options: [
+            "Return immediately to damaged areas for photos.",
+            "Wait for official announcements declaring areas safe.",
+            "Drive around in flooded streets.",
+            "Go for a swim in rough sea."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C07",
+          text: "Why is storm surge dangerous during a cyclone?",
+          options: [
+            "It is only high wind.",
+            "Sea water can rise and flood coastal areas very quickly.",
+            "It causes colourful waves.",
+            "It only affects boats."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C08",
+          text: "What family action plan is helpful for cyclone preparedness?",
+          options: [
+            "Planning holidays during cyclone season.",
+            "Creating an emergency contact list, meeting point, and evacuation plan.",
+            "Ignoring weather reports.",
+            "Leaving doors and windows open."
+          ],
+          answerIndex: 1
+        },
+        {
+          id: "C09",
+          text: "Which agency officially provides cyclone warnings in India?",
+          options: [
+            "Any trending YouTube channel.",
+            "Random weather apps.",
+            "India Meteorological Department (IMD).",
+            "Only school WhatsApp groups."
+          ],
+          answerIndex: 2
+        },
+        {
+          id: "C10",
+          text: "Why should you avoid touching fallen electric wires after a cyclone?",
+          options: [
+            "They may be hot.",
+            "They might be live and can cause severe electric shock.",
+            "They look dirty.",
+            "They are heavy."
+          ],
+          answerIndex: 1
+        }
+      ]
+    };
+
+    // ========== STATE ==========
+    let selectedTopic = null;
+    let currentQuestions = [];
+    let currentIndex = -1;
+    let attempted = 0;
+    let correct = 0;
+    let userAnswers = []; // {id, question, options, chosenIndex, answerIndex}
+    let timerInterval = null;
+    let totalSeconds = 0;
+    let quizStarted = false;
+    let quizFinished = false;
+
+    // ========== ELEMENTS ==========
+    const topicCards = document.querySelectorAll(".topic-card");
+    const quizTopicLabel = document.getElementById("quizTopicLabel");
+    const questionCountLabel = document.getElementById("questionCountLabel");
+    const questionCounterLabel = document.getElementById("questionCounterLabel");
+    const questionIndexEl = document.getElementById("questionIndex");
+    const questionTextEl = document.getElementById("questionText");
+    const optionListEl = document.getElementById("optionList");
+    const progressFill = document.getElementById("progressFill");
+    const progressPercent = document.getElementById("progressPercent");
+    const attemptLabel = document.getElementById("attemptLabel");
+    const correctLabel = document.getElementById("correctLabel");
+    const topicNameSmall = document.getElementById("topicNameSmall");
+    const btnNext = document.getElementById("btnNext");
+    const btnReset = document.getElementById("btnReset");
+    const timerChip = document.getElementById("timerChip");
+    const timerLabel = document.getElementById("timerLabel");
+    const scoreLabel = document.getElementById("scoreLabel");
+    const remarkLabel = document.getElementById("remarkLabel");
+    const circleMeter = document.getElementById("circleMeter");
+    const strengthBar = document.getElementById("strengthBar");
+    const accuracyBar = document.getElementById("accuracyBar");
+    const chipTopic = document.getElementById("chipTopic");
+    const chipStatus = document.getElementById("chipStatus");
+    const chipTime = document.getElementById("chipTime");
+    const reviewList = document.getElementById("reviewList");
+    const reviewCountLabel = document.getElementById("reviewCountLabel");
+    const userAvatar = document.getElementById("userAvatar");
+    const userName = document.getElementById("userName");
+
+    // Dummy user initials (you could set via localStorage)
+    const storedName = localStorage.getItem("drill_user_name") || "Student User";
+    userName.textContent = storedName;
+    userAvatar.textContent = storedName[0]?.toUpperCase() || "S";
+
+    // ========== HELPER FUNCTIONS ==========
+
+    function pad(num) {
+      return num.toString().padStart(2, "0");
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return pad(m) + ":" + pad(s);
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      totalSeconds = 0;
+      timerLabel.textContent = "Timer: 00:00";
+      chipTime.textContent = "Time: 00:00";
+      timerChip.classList.remove("warning", "danger");
+    }
+
+    function startTimer() {
+      resetTimer();
+      timerInterval = setInterval(() => {
+        totalSeconds++;
+        timerLabel.textContent = "Timer: " + formatTime(totalSeconds);
+        chipTime.textContent = "Time: " + formatTime(totalSeconds);
+
+        if (totalSeconds > 180 && totalSeconds <= 300) {
+          timerChip.classList.add("warning");
+          timerChip.classList.remove("danger");
+        } else if (totalSeconds > 300) {
+          timerChip.classList.add("danger");
+          timerChip.classList.remove("warning");
+        }
+      }, 1000);
+    }
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function updateProgress() {
+      const total = currentQuestions.length || 10;
+      const done = quizFinished ? total : (attempted <= total ? attempted : total);
+      const percent = Math.round((done / total) * 100);
+      progressFill.style.width = percent + "%";
+      progressPercent.textContent = percent + "%";
+      questionCountLabel.textContent = `${done} / ${total} Questions`;
+      questionCounterLabel.textContent = `/ ${total}`;
+    }
+
+    function updateStats() {
+      scoreLabel.textContent = correct;
+      const total = currentQuestions.length || 10;
+      const percent = total ? Math.round((correct / total) * 100) : 0;
+      circleMeter.textContent = percent + "%";
+
+      // Strength & accuracy bars
+      strengthBar.style.width = percent + "%";
+      accuracyBar.style.width = percent + "%";
+
+      let remark = "Answer questions to see your preparedness level.";
+      let status = "Status: Idle";
+
+      if (quizStarted && !quizFinished) {
+        status = "Status: In Progress";
+        if (percent < 40) {
+          remark = "Keep going! Every question helps you learn more about safety.";
+        } else if (percent < 70) {
+          remark = "Good job! You understand many safety steps. Try to improve further.";
+        } else {
+          remark = "Excellent preparedness! You have a strong understanding of disaster safety.";
+        }
+      }
+
+      if (quizFinished) {
+        status = "Status: Completed";
+        if (percent < 40) {
+          remark = "You need more practice. Revise official guidelines and try again.";
+        } else if (percent < 70) {
+          remark = "Nice effort! A bit more revision can make you highly prepared.";
+        } else if (percent < 90) {
+          remark = "Very good! You are well-prepared for most situations.";
+        } else {
+          remark = "Outstanding! You are highly prepared for emergency situations.";
+        }
+      }
+
+      remarkLabel.textContent = remark;
+      chipStatus.textContent = status;
+    }
+
+    function renderQuestion() {
+      if (!currentQuestions.length || currentIndex < 0 || currentIndex >= currentQuestions.length) {
+        questionIndexEl.textContent = "–";
+        questionTextEl.textContent = "Click 'Start Quiz' to begin answering questions.";
+        optionListEl.innerHTML = "";
+        return;
+      }
+
+      const q = currentQuestions[currentIndex];
+      questionIndexEl.textContent = (currentIndex + 1).toString();
+      questionTextEl.textContent = q.text;
+      optionListEl.innerHTML = "";
+      optionListEl.classList.add("fade-in");
+      setTimeout(() => optionListEl.classList.remove("fade-in"), 260);
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.dataset.index = idx;
+
+        const label = document.createElement("div");
+        label.className = "option-label";
+        label.textContent = String.fromCharCode(65 + idx);
+
+        const text = document.createElement("div");
+        text.className = "option-text";
+        text.textContent = opt;
+
+        btn.appendChild(label);
+        btn.appendChild(text);
+
+        btn.addEventListener("click", () => handleOptionClick(idx, btn));
+
+        optionListEl.appendChild(btn);
+      });
+    }
+
+    function handleOptionClick(idx, btnEl) {
+      if (!quizStarted || quizFinished) return;
+
+      const q = currentQuestions[currentIndex];
+      const alreadyAnswered = userAnswers.find((ua) => ua.id === q.id);
+
+      // Prevent re-answering same question
+      if (alreadyAnswered) return;
+
+      attempted++;
+      attemptLabel.textContent = attempted.toString();
+
+      const optionButtons = optionListEl.querySelectorAll(".option-btn");
+      optionButtons.forEach((btn) => (btn.disabled = true));
+
+      const isCorrect = idx === q.answerIndex;
+      if (isCorrect) {
+        correct++;
+        correctLabel.textContent = correct.toString();
+      }
+
+      // Mark selected
+      btnEl.classList.add("selected");
+      if (isCorrect) btnEl.classList.add("correct");
+      else btnEl.classList.add("wrong");
+
+      // Highlight correct option
+      optionButtons.forEach((btn) => {
+        const index = Number(btn.dataset.index);
+        if (index === q.answerIndex) {
+          btn.classList.add("correct");
+        } else if (index !== idx) {
+          btn.classList.add("dim");
+        }
+      });
+
+      // Store answer
+      userAnswers.push({
+        id: q.id,
+        question: q.text,
+        options: q.options,
+        chosenIndex: idx,
+        answerIndex: q.answerIndex
+      });
+
+      updateProgress();
+      updateStats();
+
+      // If last question
+      if (attempted >= currentQuestions.length) {
+        quizFinished = true;
+        if (timerInterval) clearInterval(timerInterval);
+        buildReview();
+      }
+    }
+
+    function buildReview() {
+      reviewList.innerHTML = "";
+      if (!userAnswers.length) {
+        const div = document.createElement("div");
+        div.className = "empty-text";
+        div.textContent =
+          "No answers recorded. Complete the quiz to see your detailed review.";
+        reviewList.appendChild(div);
+        reviewCountLabel.textContent = "(0 reviewed)";
+        return;
+      }
+
+      userAnswers.forEach((ua, idx) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "review-item";
+
+        const qDiv = document.createElement("div");
+        qDiv.className = "review-q";
+        qDiv.textContent = `${idx + 1}. ${ua.question}`;
+
+        const yourAns = ua.options[ua.chosenIndex];
+        const correctAns = ua.options[ua.answerIndex];
+
+        const ansDiv = document.createElement("div");
+        ansDiv.className = "review-ans";
+        const correctSpan = document.createElement("span");
+        correctSpan.className = "correct";
+        correctSpan.textContent = correctAns;
+
+        const yourSpan = document.createElement("span");
+        yourSpan.className = ua.chosenIndex === ua.answerIndex ? "correct" : "wrong";
+        yourSpan.textContent = yourAns;
+
+        ansDiv.innerHTML = `<span class="label">Your answer:</span> `;
+        ansDiv.appendChild(yourSpan);
+        ansDiv.innerHTML += `<br/><span class="label">Correct answer:</span> `;
+        ansDiv.appendChild(correctSpan);
+
+        wrapper.appendChild(qDiv);
+        wrapper.appendChild(ansDiv);
+
+        reviewList.appendChild(wrapper);
+      });
+
+      reviewCountLabel.textContent = `(${userAnswers.length} reviewed)`;
+    }
+
+    function resetQuiz(fullResetTopic = false) {
+      quizStarted = false;
+      quizFinished = false;
+      attempted = 0;
+      correct = 0;
+      userAnswers = [];
+      currentIndex = -1;
+
+      attemptLabel.textContent = "0";
+      correctLabel.textContent = "0";
+      scoreLabel.textContent = "0";
+      questionIndexEl.textContent = "–";
+      questionTextEl.textContent = "Select a topic on the left and click 'Start Quiz' to begin.";
+      optionListEl.innerHTML = "";
+      questionCountLabel.textContent = "0 / 10 Questions";
+      updateProgress();
+      resetTimer();
+      strengthBar.style.width = "0%";
+      accuracyBar.style.width = "0%";
+      circleMeter.textContent = "0%";
+      remarkLabel.textContent = "Answer questions to see your preparedness level.";
+      chipStatus.textContent = "Status: Idle";
+
+      // Reset review
+      reviewList.innerHTML =
+        '<div class="empty-text">Once you finish the quiz, you will see a summary of each question, your selected answer, and the correct answer here.</div>';
+      reviewCountLabel.textContent = "(0 reviewed)";
+
+      if (fullResetTopic) {
+        selectedTopic = null;
+        currentQuestions = [];
+        quizTopicLabel.textContent = "Select a topic to begin your drill.";
+        topicNameSmall.textContent = "None";
+        chipTopic.textContent = "No topic selected";
+        topicCards.forEach((card) => card.classList.remove("active"));
+      }
+
+      btnNext.textContent = selectedTopic ? "Start Quiz" : "Start Quiz";
+    }
+
+    // ========== TOPIC SELECTION ==========
+    topicCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        topicCards.forEach((c) => c.classList.remove("active"));
+        card.classList.add("active");
+        selectedTopic = card.dataset.topic;
+        const friendly =
+          selectedTopic.charAt(0).toUpperCase() + selectedTopic.slice(1);
+
+        quizTopicLabel.textContent =
+          friendly + " Preparedness Quiz (10 questions based on NDMA guidelines)";
+        topicNameSmall.textContent = friendly;
+        chipTopic.textContent = "Topic: " + friendly;
+
+        // Reset quiz but keep topic
+        resetQuiz(false);
+      });
+    });
+
+    // ========== NEXT / START BUTTON ==========
+    btnNext.addEventListener("click", () => {
+      if (!selectedTopic) {
+        alert("Please select a disaster topic on the left first.");
+        return;
+      }
+
+      if (!quizStarted) {
+        // Start quiz
+        quizStarted = true;
+        quizFinished = false;
+        attempted = 0;
+        correct = 0;
+        userAnswers = [];
+        const qArr = questions[selectedTopic] || [];
+        currentQuestions = shuffle(qArr).slice(0, 10);
+        currentIndex = 0;
+        btnNext.textContent = "Next";
+        chipStatus.textContent = "Status: In Progress";
+        startTimer();
+        renderQuestion();
+        updateProgress();
+        updateStats();
+      } else if (!quizFinished) {
+        // Next question
+        if (currentIndex < currentQuestions.length - 1) {
+          currentIndex++;
+          renderQuestion();
+        } else {
+          // Completed
+          quizFinished = true;
+          if (timerInterval) clearInterval(timerInterval);
+          buildReview();
+          updateStats();
+          btnNext.textContent = "Restart Quiz";
+        }
+      } else {
+        // Restart quiz
+        resetQuiz(false);
+        quizStarted = false;
+        btnNext.textContent = "Start Quiz";
+      }
+    });
+
+    // ========== RESET BUTTON ==========
+    btnReset.addEventListener("click", () => {
+      const fullReset = confirm(
+        "Do you want to reset everything including selected topic?"
+      );
+      resetQuiz(fullReset);
+    });
+
+    // Initialize UI
+    resetQuiz(true);
+  </script>
+</body>
+</html>
