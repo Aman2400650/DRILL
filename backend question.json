@@ -1,0 +1,50 @@
+{
+  "fire": [
+    {
+      "id": 1,
+      "topic": "fire",
+      "question": "What should you do first during a fire?",
+      "options": [
+        "Stay calm and alert others",
+        "Run and push others",
+        "Hide under a bed",
+        "Wait for someone to help you"
+      ],
+      "answerIndex": 0
+    },
+    {
+      "id": 2,
+      "topic": "fire",
+      "question": "What is the PASS method?",
+      "options": [
+        "Pull, Aim, Squeeze, Sweep",
+        "Push, Act, Stop, Save",
+        "Pick, Alert, Secure, Signal",
+        "Pass the fire to others"
+      ],
+      "answerIndex": 0
+    },
+    {
+      "id": 3,
+      "topic": "fire",
+      "question": "Which extinguisher is used for electrical fires?",
+      "options": ["Water", "CO2", "Sand", "Foam"],
+      "answerIndex": 1
+    }
+  ],
+
+  "earthquake": [
+    {
+      "id": 1,
+      "topic": "earthquake",
+      "question": "What should you do during an earthquake?",
+      "options": [
+        "Drop, Cover, Hold",
+        "Run to stairs",
+        "Jump from building",
+        "Use elevator"
+      ],
+      "answerIndex": 0
+    }
+  ]
+}
